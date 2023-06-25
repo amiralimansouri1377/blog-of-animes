@@ -1,0 +1,32 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block css_files %}
+    <link rel="stylesheet" href="{% static 'blog/styles.css' %}">
+{% endblock css_files %}
+
+{% block page_title %}{{ post.title }}{% endblock page_title %}
+
+{% block content %}
+    <div class="single-post">
+        <h2>{{ post.title }}</h2>
+        <img src="{{ post.image.url }}" alt="{{ post.title }}">
+        <p>{{ post.content|linebreaks }}</p>
+        <div class="tags">
+            {% for tag in post.tag.all %}
+                <span class="tag">{{ tag }}</span>
+            {% endfor %}
+        </div>
+        <hr>
+        <p class="comment-title">Comment</p>
+        <div class="comments">
+            {% for comment in post.comment_set.all %}
+                <div class="comment">
+                    User: <span>{{ comment.user_email }}</span>
+                    <p>{{comment.comment_text}}</p>
+                </div>
+            {% endfor %}
+        </div>
+        {% include 'blog/comment-form.html' %}
+    </div>
+{% endblock content %}
