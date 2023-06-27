@@ -1,7 +1,7 @@
-from django.http import HttpResponse
 from django.urls import reverse
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView, CreateView
+from django.core.paginator import Paginator
 from .models import Post, Comment
 from .form import CommentForm
 
@@ -21,10 +21,21 @@ class IndexView(ListView):
         return data
     
 
-class AllPostsView(ListView):
-    template_name = "blog/index.html"
-    model = Post
-    context_object_name = "posts"
+# class AllPostsView(ListView):
+#     template_name = "blog/index.html"
+#     model = Post
+#     context_object_name = "posts"
+
+def all_post(request):
+    posts = Post.objects.all()
+    paginator = Paginator(posts, 3)
+    page_number = request.GET.get("page", 1)
+    posts = paginator.page(page_number)
+
+    return render(request, "blog/all-post.html", {
+        "posts": posts,
+        "page_range": paginator.page_range
+    })
 
 
 class DetailPostView(DetailView):
